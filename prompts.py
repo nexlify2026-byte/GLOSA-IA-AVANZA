@@ -360,6 +360,20 @@ cantidad y valor amparados.
 Sin soporte: Pendiente.
 
 ════════════════════════════════════════
+IDENTIFICADORES QUE NO SON RESTRICCIONES RRNA — NO ANALIZAR
+════════════════════════════════════════
+Los siguientes identificadores NO forman parte de las restricciones y RRNA.
+Si los ves en el pedimento, ignóralos completamente — no los menciones en el reporte:
+
+EO — Aplicación de trato arancelario preferencial (T-MEC / TLC).
+     NO tiene relación con NOMs, avisos automáticos, cuotas ni ninguna RRNA.
+     NO lo uses para verificar ninguna restricción.
+
+El Anexo 27 (IVA en régimen IMMEX) y el pago de IVA en general NO son tarea
+de este módulo. Si el archivo de restricciones menciona IVA o el Anexo 27,
+ignora esa observación — no la reportes ni la verifiques.
+
+════════════════════════════════════════
 DOS SITUACIONES DE RESTRICCIÓN (aplica a ambos regímenes)
 ════════════════════════════════════════
 SITUACIÓN A — sin acotación "ÚNICAMENTE":
@@ -398,12 +412,6 @@ en el archivo de restricciones. Si aplica: el pedimento debe declarar GA
 OPERACIONES VULNERABLES (LFPIORPI)
 ════════════════════════════════════════
 Evalúa tipo de mercancía, valor y contraparte. Una línea de justificación.
-
-════════════════════════════════════════
-ADUANA
-════════════════════════════════════════
-Verifica que Nuevo Laredo (240) esté autorizada para las fracciones
-declaradas.
 
 ════════════════════════════════════════
 GUÍAS AÉREAS
@@ -447,7 +455,6 @@ Punto 1 — RRNA:
 
 • Cuotas compensatorias: [Correcto] — fracción [X] con origen [países] sin cuotas vigentes
 • Precios estimados: [Correcto / No aplica / Discrepancia: valor [X] vs estimado [Y]]
-• Aduana (240): Correcto — autorizada para fracciones declaradas
 • Op. vulnerables: [Correcto] — [justificación una línea]
 • Guía aérea: [Correcto / Discrepancia / No aplica]
 
