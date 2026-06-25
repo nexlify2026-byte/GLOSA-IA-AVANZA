@@ -1,7 +1,7 @@
 """
-Glosador IA — Avanza v4.0 (Gemini)
+Glosador IA — Avanza v4.1 (Gemini google.genai SDK)
 Motor: Gemini Flash 2.5 (base) + Gemini Pro 2.5 (RRNAs siempre)
-Conserva el parser de pedimento PDF→JSON para restricciones_rrna y factura_vs_pedimento.
+Conserva el parser de pedimento PDF->JSON para restricciones_rrna y factura_vs_pedimento.
 """
 
 import json
@@ -13,7 +13,8 @@ import time
 from pathlib import Path
 
 import pdfplumber
-import google.generativeai as genai
+from google import genai
+from google.genai import types
 from dotenv import load_dotenv
 from fastapi import FastAPI, File, Form, HTTPException, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
@@ -39,19 +40,16 @@ GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 if not GEMINI_API_KEY:
     raise RuntimeError("GEMINI_API_KEY no configurada")
 
-genai.configure(api_key=GEMINI_API_KEY)
+client = genai.Client(api_key=GEMINI_API_KEY)
 
 FLASH_MODEL = "gemini-2.5-flash"
 PRO_MODEL   = "gemini-2.5-pro"
 LOTE_MAXIMO = 10
 
-# Glosas que SIEMPRE usan Pro
-GLOSAS_PRO = {"restricciones_rrna"}
-
-# Glosas que usan el parser de pedimento (inyectan JSON)
+GLOSAS_PRO        = {"restricciones_rrna"}
 GLOSAS_CON_PARSER = {"restricciones_rrna", "factura_vs_pedimento"}
 
-app = FastAPI(title="Glosador IA — Avanza", version="4.0.0")
+app = FastAPI(title="Glosador IA — Avanza", version="4.1.0")
 app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"])
 
 
@@ -121,37 +119,51 @@ def parsear_doc_faltante(texto: str) -> dict:
 
 
 # ─────────────────────────────────────────────────────────────
-# Motor Gemini
+# Motor Gemini (google.genai SDK nueva)
 # ─────────────────────────────────────────────────────────────
 def subir_pdf_a_gemini(ruta_local: str, nombre_display: str):
-    archivo = genai.upload_file(path=ruta_local, display_name=nombre_display,
-                                 mime_type="application/pdf")
+    with open(ruta_local, "rb") as f:
+        archivo = client.files.upload(
+            file=f,
+            config=types.UploadFileConfig(
+                display_name=nombre_display,
+                mime_type="application/pdf",
+            ),
+        )
     intentos = 0
     while archivo.state.name == "PROCESSING" and intentos < 30:
         time.sleep(2)
         intentos += 1
-        archivo = genai.get_file(archivo.name)
+        archivo = client.files.get(name=archivo.name)
     if archivo.state.name != "ACTIVE":
         raise RuntimeError(f"'{nombre_display}' no procesado: {archivo.state.name}")
     return archivo
 
 
-def llamar_gemini(modelo_id: str, partes: list, prompt_texto: str) -> str:
-    contenido = list(partes) + [prompt_texto]
-    modelo = genai.GenerativeModel(model_name=modelo_id)
-    resp = modelo.generate_content(
-        contenido,
-        generation_config=genai.GenerationConfig(temperature=0.1, max_output_tokens=65536),
-        request_options={"timeout": 300},
+def llamar_gemini(modelo_id: str, archivos: list, prompt_texto: str) -> str:
+    contenido = []
+    for archivo in archivos:
+        contenido.append(types.Part.from_uri(
+            file_uri=archivo.uri,
+            mime_type="application/pdf",
+        ))
+    contenido.append(prompt_texto)
+
+    resp = client.models.generate_content(
+        model=modelo_id,
+        contents=contenido,
+        config=types.GenerateContentConfig(
+            temperature=0.1,
+            max_output_tokens=65536,
+        ),
     )
     if not resp or not resp.text:
-        raise RuntimeError("Gemini no retornó respuesta")
+        raise RuntimeError("Gemini no retorno respuesta")
     return resp.text
 
 
 def procesar_en_lotes(archivos_gemini: list, nombres: list, prompt_texto: str,
                        modelo_id: str, bloque_json: str = "") -> str:
-    """Lotes para muchos archivos. bloque_json se antepone al prompt en cada lote si existe."""
     prompt_full = (bloque_json + "\n\n" + prompt_texto) if bloque_json else prompt_texto
 
     if len(archivos_gemini) <= LOTE_MAXIMO:
@@ -165,7 +177,7 @@ def procesar_en_lotes(archivos_gemini: list, nombres: list, prompt_texto: str,
         fin = min(ini + LOTE_MAXIMO, len(archivos_gemini))
         prompt_lote = (
             f"{prompt_full}\n\n"
-            f"NOTA: Lote {i+1} de {total_lotes}. Procesa ÚNICAMENTE los {fin-ini} "
+            f"NOTA: Lote {i+1} de {total_lotes}. Procesa UNICAMENTE los {fin-ini} "
             f"documentos de este lote y reporta solo su subtotal."
         )
         texto_lote = llamar_gemini(modelo_id, archivos_gemini[ini:fin], prompt_lote)
@@ -173,7 +185,9 @@ def procesar_en_lotes(archivos_gemini: list, nombres: list, prompt_texto: str,
         if detectar_tipo_respuesta(texto_lote) == "doc_faltante":
             return texto_lote
 
-        resultados.append(f"--- Lote {i+1}/{total_lotes} ({', '.join(nombres[ini:fin])}) ---\n{texto_lote}")
+        resultados.append(
+            f"--- Lote {i+1}/{total_lotes} ({', '.join(nombres[ini:fin])}) ---\n{texto_lote}"
+        )
 
         for linea in texto_lote.split("\n"):
             if "TOTAL:" in linea:
@@ -183,8 +197,8 @@ def procesar_en_lotes(archivos_gemini: list, nombres: list, prompt_texto: str,
                         n = int("".join(filter(str.isdigit, p.split()[0])))
                     except Exception:
                         continue
-                    if "factura" in p:   t_fact += n
-                    elif "correcta" in p: t_corr += n
+                    if "factura" in p:        t_fact += n
+                    elif "correcta" in p:     t_corr += n
                     elif "discrepancia" in p: t_disc += n
 
         if i < total_lotes - 1:
@@ -232,14 +246,12 @@ async def glosar(
 
     config_glosa = GLOSAS[tipo_glosa]
     prompt_texto = config_glosa["prompt"]
-
-    # Modelo según glosa: RRNAs siempre Pro, resto Flash
-    modelo_id = PRO_MODEL if tipo_glosa in GLOSAS_PRO else FLASH_MODEL
-    log.info("Glosa '%s' → modelo %s", tipo_glosa, modelo_id)
+    modelo_id    = PRO_MODEL if tipo_glosa in GLOSAS_PRO else FLASH_MODEL
+    log.info("Glosa '%s' -> modelo %s", tipo_glosa, modelo_id)
 
     if contexto_previo.strip():
         prompt_texto = (
-            "CONTEXTO PREVIO: Se había detectado un documento faltante que ahora se proporciona.\n"
+            "CONTEXTO PREVIO: Se habia detectado un documento faltante que ahora se proporciona.\n"
             f"{contexto_previo.strip()[:2000]}\n\n"
             "Con todos los documentos disponibles, realiza la glosa completa.\n\n"
             f"{prompt_texto}"
@@ -254,7 +266,6 @@ async def glosar(
     bloque_json = ""
 
     try:
-        # Guardar todos los PDFs localmente
         for archivo in archivos:
             contenido = await archivo.read()
             with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as tmp:
@@ -262,12 +273,11 @@ async def glosar(
                 temp_paths.append(tmp.name)
             nombres.append(archivo.filename)
 
-        # ── Glosas con parser: detectar pedimento, parsear, separar ──
+        # ── Glosas con parser ──
         if tipo_glosa in GLOSAS_CON_PARSER:
             idx_ped = next((i for i, r in enumerate(temp_paths) if es_pedimento(r)), None)
             if idx_ped is None:
-                raise HTTPException(400,
-                    "No se encontró el pedimento. Incluye el PDF del pedimento.")
+                raise HTTPException(400, "No se encontro el pedimento. Incluye el PDF del pedimento.")
 
             try:
                 pedimento_json = parsear_pedimento_pdf(temp_paths[idx_ped])
@@ -284,31 +294,27 @@ async def glosar(
                 f"{json.dumps(pedimento_json, ensure_ascii=False, indent=2)}\n"
             )
 
-            # Para restricciones: validar que exista el archivo de restricciones
             if tipo_glosa == "restricciones_rrna":
                 idx_res = next((i for i, r in enumerate(temp_paths)
                                 if i != idx_ped and es_restricciones(r)), None)
                 if idx_res is None:
                     return JSONResponse({
-                        "tipo": "doc_faltante",
+                        "tipo":               "doc_faltante",
                         "documento_faltante": "Archivo de Restricciones",
-                        "motivo": "Sin este archivo no es posible verificar RRNAs",
-                        "punto_afectado": "Punto 1 — Restricciones completo",
-                        "tipo_glosa": tipo_glosa,
-                        "label": config_glosa["label"],
+                        "motivo":             "Sin este archivo no es posible verificar RRNAs",
+                        "punto_afectado":     "Punto 1 — Restricciones completo",
+                        "tipo_glosa":         tipo_glosa,
+                        "label":              config_glosa["label"],
                         "archivos_procesados": nombres,
                     })
-                # PDFs a Gemini: restricciones primero, luego soporte (todo menos pedimento)
                 orden = [idx_res] + [i for i in range(len(temp_paths))
                                       if i not in (idx_ped, idx_res)]
             else:
-                # factura_vs_pedimento: todos menos el pedimento
                 orden = [i for i in range(len(temp_paths)) if i != idx_ped]
 
             rutas_subir   = [temp_paths[i] for i in orden]
-            nombres_subir = [nombres[i] for i in orden]
+            nombres_subir = [nombres[i]    for i in orden]
         else:
-            # Glosas sin parser: subir todo
             rutas_subir   = temp_paths
             nombres_subir = nombres
 
@@ -316,12 +322,10 @@ async def glosar(
         for ruta, nom in zip(rutas_subir, nombres_subir):
             archivos_gemini.append(subir_pdf_a_gemini(ruta, nom))
 
-        # Ejecutar
         texto_respuesta = procesar_en_lotes(
             archivos_gemini, nombres_subir, prompt_texto, modelo_id, bloque_json
         )
 
-        # Post-proceso
         tipo_resp = detectar_tipo_respuesta(texto_respuesta)
         if tipo_resp == "doc_faltante":
             info = parsear_doc_faltante(texto_respuesta)
@@ -360,7 +364,7 @@ async def glosar(
 async def health():
     return {
         "status":      "ok",
-        "version":     "4.0.0",
+        "version":     "4.1.0",
         "flash":       FLASH_MODEL,
         "pro":         PRO_MODEL,
         "glosas_pro":  list(GLOSAS_PRO),
