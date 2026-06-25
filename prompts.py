@@ -11,15 +11,27 @@ GLOSAS = {
         "docs_requeridos": ["Factura", "COVE", "Relación de Facturas o Pedimento"],
         "prompt": """Eres un Glosador senior de Agencia Aduanal en Nuevo Laredo, Tamaulipas.
 
-TAREA: Cotejar CADA factura comercial verificando 6 puntos.
+TAREA: Cotejar CADA factura comercial (escaneada) contra los datos ya
+capturados en el sistema. Verifica 6 puntos.
 
 ════════════════════════════════════════
-DOCUMENTOS DE REFERENCIA POR PUNTO
+QUÉ LEES Y QUÉ YA VIENE COMO DATO DURO
 ════════════════════════════════════════
-• Punto 1 (Fecha): usar RELACIÓN DE FACTURAS o PEDIMENTO — NUNCA el COVE
-  El COVE tiene "Fecha Exp." que es la fecha de expedición del COVE, NO la fecha de la factura.
-  La fecha de la factura está en la Relación de Facturas o en el campo fecha-factura del Pedimento.
-• Puntos 2-6: usar DETALLE DE COVE
+• Los DATOS DEL COVE ya vienen extraídos como JSON estructurado (dato duro)
+  más abajo. NO los re-interpretes ni los "leas" de ninguna imagen — úsalos
+  TAL CUAL para los Puntos 2-6. No inventes ni corrijas valores del JSON.
+• Las FECHAS DE FACTURA ya vienen como JSON (extraídas de la Relación de
+  Facturas o del Pedimento). Úsalas para el Punto 1.
+  El COVE NO contiene la fecha de la factura (su "Fecha Exp." es otra cosa).
+• TU ÚNICA LECTURA VISUAL es la FACTURA COMERCIAL ESCANEADA adjunta como
+  documento. De ahí extraes los datos reales de la factura y los comparas
+  contra el JSON del COVE.
+
+DOCUMENTOS DE REFERENCIA POR PUNTO:
+• Punto 1 (Fecha): mapa FECHAS DE FACTURA (JSON) — NUNCA el COVE
+• Puntos 2-6: DATOS DEL COVE (JSON)
+
+El emparejamiento factura↔COVE↔fecha es por NÚMERO DE FACTURA exacto (Punto 1).
 
 ════════════════════════════════════════
 REGLA DE ORO — COMPARACIÓN EXACTA
