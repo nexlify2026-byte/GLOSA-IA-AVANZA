@@ -364,8 +364,51 @@ def parse_partidas(clean_lines, tipo_cambio, proveedores):
                     partida["valor_dolares_calc"] = round(pp / tc, 2)
                 i += 1
 
-        # Bloque de identificadores hasta OBSERVACIONES
+        # ── Bloque NOM (N3/NM) y bloque IDENTIF hasta OBSERVACIONES ──
+        # Ambos bloques van juntos entre los valores y OBSERVACIONES.
+        # Los distinguimos por contenido de cada línea.
+        NOM_CLAVE_RE = re.compile(r"^(N3|NM)\s+(NOM-[\d]{3}-[A-Z]+-\d{4})\s*(.*)")
+        nom_n3   = []
+        nom_nm   = []
+        ultimo_nm = None
         id_text_parts = []
+
+        while i < n and not clean_lines[i].startswith("OBSERVACIONES"):
+            ln = clean_lines[i]
+
+            # Header del bloque NOM — saltar
+            if ln.startswith("CLAVE NUM.PERMISO"):
+                i += 1
+                continue
+
+            m = NOM_CLAVE_RE.match(ln)
+            if m:
+                clave, nom, folio = m.group(1), m.group(2), m.group(3).strip()
+                entry = {"nom": nom, "folio": folio}
+                if clave == "N3":
+                    nom_n3.append(entry)
+                    ultimo_nm = None
+                else:
+                    nom_nm.append(entry)
+                    ultimo_nm = entry
+                i += 1
+                continue
+
+            # Línea suelta que completa el folio partido del NM anterior
+            if ultimo_nm is not None and re.match(r"^[\dA-Z]{1,6}$", ln.strip()):
+                ultimo_nm["folio"] = (ultimo_nm["folio"] + ln.strip()).strip()
+                ultimo_nm = None
+                i += 1
+                continue
+
+            # Todo lo demás va al bloque de identificadores (IDENTIF texto)
+            ultimo_nm = None
+            id_text_parts.append(ln)
+            i += 1
+
+        partida["nom_n3"] = nom_n3
+        partida["nom_nm"] = nom_nm
+
         while i < n and not clean_lines[i].startswith("OBSERVACIONES"):
             id_text_parts.append(clean_lines[i])
             i += 1
