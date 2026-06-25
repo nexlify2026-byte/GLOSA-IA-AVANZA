@@ -30,6 +30,7 @@ from parse_pedimento import (
 )
 from parse_cove import parse_coves, es_cove
 from parse_relacion import parse_relacion, es_relacion
+from parse_identificadores import extraer_identificadores_posicional
 
 # ─────────────────────────────────────────────────────────────
 # Configuración
@@ -49,8 +50,8 @@ PRO_MODEL   = "gemini-2.5-pro"
 LOTE_MAXIMO = 10
 
 GLOSAS_PRO        = {"restricciones_rrna"}
-GLOSAS_CON_PARSER = {"restricciones_rrna"}   # parser de pedimento inyectado directo
-GLOSA_FACTURA_COVE = "factura_vs_cove"        # flujo híbrido propio
+GLOSAS_CON_PARSER = {"restricciones_rrna", "tmec"}   # pedimento JSON inyectado directo
+GLOSA_FACTURA_COVE = "factura_vs_cove"                # flujo híbrido propio
 
 app = FastAPI(title="Glosador IA — Avanza", version="4.1.0")
 app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"])
@@ -85,6 +86,18 @@ def parsear_pedimento_pdf(ruta_pdf: str) -> dict:
     clean_lines = get_clean_lines(full_text)
     proveedores = parse_proveedores(clean_lines)
     partidas    = parse_partidas(clean_lines, header.get("tipo_cambio"), proveedores)
+
+    # Identificadores de partida por posición (captura EN + complementos,
+    # que el parser de texto pierde por el colapso de columnas y wraps).
+    try:
+        ids_pos = extraer_identificadores_posicional(ruta_pdf)
+        for p in partidas:
+            seq = p.get("secuencia")
+            if seq in ids_pos:
+                p["identificadores"] = ids_pos[seq]
+    except Exception:
+        log.exception("Fallo extractor posicional de identificadores; se usan los de texto")
+
     return {
         "pedimento":   header,
         "proveedores": proveedores,
