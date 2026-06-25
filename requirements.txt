@@ -3,4 +3,4 @@ uvicorn[standard]
 python-dotenv
 python-multipart
 pdfplumber
-google-generativeai
+google-genai
