@@ -574,6 +574,16 @@ TAREA: Verificar que cada certificado T-MEC cumpla los 9 elementos obligatorios 
 y sea coherente con la factura comercial y el pedimento.
 
 ════════════════════════════════════════
+DATOS DEL PEDIMENTO (JSON dato duro)
+════════════════════════════════════════
+Los DATOS DEL PEDIMENTO vienen extraídos como JSON estructurado más abajo
+(fracción, descripción, país de origen, identificadores y proveedor PO por
+partida). Úsalos TAL CUAL — NO leas el pedimento de ninguna imagen.
+Para vincular un certificado con su partida, cruza por: número de factura
+(observación de la partida), proveedor (identificador PO) y fracción.
+Tu lectura visual se limita a los CERTIFICADOS T-MEC y las FACTURAS adjuntas.
+
+════════════════════════════════════════
 FORMATO — OBLIGATORIO
 ════════════════════════════════════════
 • NO uses tablas markdown (| col | col |)
@@ -609,6 +619,25 @@ LOS 9 ELEMENTOS DEL ANEXO 5-A
    a) ¿La descripción es suficiente para relacionarla con la mercancía de la factura?
       Verifica que describan el MISMO producto aunque estén en idiomas distintos.
    b) ¿Fracción arancelaria a 6 dígitos del SA?
+
+   ── NORMALIZACIÓN DE FRACCIÓN ANTES DE COMPARAR (OBLIGATORIO) ──
+   El certificado T-MEC declara la clasificación a nivel Sistema Armonizado
+   (6 dígitos), a veces con puntos (3919.90) o más dígitos (3921.13.02).
+   El pedimento declara la fracción mexicana a 8 dígitos + NICO.
+   El SA es internacional SOLO a 6 dígitos: la comparación es VÁLIDA si
+   coinciden los PRIMEROS 6 DÍGITOS, ignorando puntos y dígitos extra.
+
+   Procedimiento:
+   1. Quita puntos y espacios de ambas (cert y pedimento).
+   2. Toma los primeros 6 dígitos de cada una.
+   3. Si los 6 dígitos coinciden → clasificación CORRECTA. NO marques discrepancia.
+
+   Ejemplos que SÍ coinciden (NO son discrepancia):
+   • Cert 3919.90  vs pedimento 39199099 → 391990 = 391990 ✓
+   • Cert 392113   vs pedimento 39211302 → 392113 = 392113 ✓
+   • Cert 3921.13.02 vs pedimento 39211302 → 392113 = 392113 ✓
+   Solo es discrepancia real si difieren los primeros 6 dígitos.
+
    c) Si ampara un solo embarque, ¿incluye el número de factura? ¿Coincide exactamente?
    d) Si ampara período global (múltiples embarques), el número de factura individual
       NO es requerido — no marques discrepancia por su ausencia en ese caso.
