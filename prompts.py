@@ -15,6 +15,17 @@ TAREA: Cotejar CADA factura comercial (escaneada) contra los datos ya
 capturados en el sistema. Verifica 6 puntos.
 
 ════════════════════════════════════════
+VOCABULARIO DE ESTATUS — OBLIGATORIO
+════════════════════════════════════════
+Usa ÚNICAMENTE estas palabras para reportar el resultado de cada verificación:
+• Correcto — el dato coincide sin objeción
+• Discrepancia — hay diferencia real entre documentos que requiere corrección
+• Observación — situación especial que no es error pero requiere atención
+• Pendiente — falta documento o información para concluir
+• No aplica — la verificación no aplica a esta operación
+NUNCA uses: Alerta, Advertencia, Inconsistencia, Irregularidad, ni variantes.
+
+════════════════════════════════════════
 QUÉ LEES Y QUÉ YA VIENE COMO DATO DURO
 ════════════════════════════════════════
 • Los DATOS DEL COVE ya vienen extraídos como JSON estructurado (dato duro)
@@ -139,14 +150,27 @@ ANTES de marcar discrepancia de origen, confirma:
 Si la factura NO indica país de origen → omite esta verificación completamente.
 
 ════════════════════════════════════════
-DESCRIPCIÓN INGLÉS vs ESPAÑOL
+DESCRIPCIÓN INGLÉS vs ESPAÑOL — PUNTO 5
 ════════════════════════════════════════
 Las facturas comerciales vienen en inglés y los COVEs en español.
-Para el Punto 5, verifica que la descripción en inglés de la factura sea la TRADUCCIÓN
-de la descripción en español del COVE — que describan el MISMO producto.
-NO marques discrepancia por diferencia de idioma.
-SÍ marca discrepancia si describen productos distintos (material diferente, función diferente,
-especificaciones técnicas incompatibles).
+Para el Punto 5, verifica que la descripción en inglés de la factura sea TRADUCCIÓN
+FIEL de la descripción en español del COVE — que describan el MISMO producto con
+el MISMO significado técnico.
+
+REGLA DE TRADUCCIÓN FIEL:
+- Traduce mentalmente la descripción en inglés al español y compárala con el COVE.
+- Correcto: misma categoría de producto, misma función, mismo material principal.
+- Discrepancia: términos que en traducción directa describen productos DISTINTOS
+  (ej. "Steel pipe" ≠ "Tubo de aluminio"; "Motor" ≠ "Compresor").
+- NO marques discrepancia por:
+  • Diferencia de idioma solamente
+  • Abreviaturas técnicas equivalentes (ej. "SS" = "acero inoxidable")
+  • Nivel de detalle diferente si el producto es el mismo
+  • Marcas o modelos adicionales en la factura que no están en el COVE
+- SÍ marca discrepancia si:
+  • La traducción directa describe un producto de categoría diferente
+  • El material principal es distinto
+  • La función o uso es incompatible
 
 ════════════════════════════════════════
 6 PUNTOS A VERIFICAR
@@ -205,6 +229,17 @@ ALCANCE ESTRICTO:
 Verifica ÚNICAMENTE las restricciones RRNA del archivo de restricciones para las fracciones del pedimento.
 NO analices valoración, régimen, claves del pedimento, ni nada fuera de restricciones y pesos.
 Si el pedimento tiene errores de valoración o régimen, eso NO es tu tarea aquí — ignóralo.
+
+════════════════════════════════════════
+VOCABULARIO DE ESTATUS — OBLIGATORIO
+════════════════════════════════════════
+Usa ÚNICAMENTE estas palabras para reportar el resultado de cada verificación:
+• Correcto — el dato coincide sin objeción
+• Discrepancia — hay diferencia real entre documentos que requiere corrección
+• Observación — situación especial que no es error pero requiere atención
+• Pendiente — falta documento o información para concluir
+• No aplica — la verificación no aplica a esta operación
+NUNCA uses: Alerta, Advertencia, Inconsistencia, Irregularidad, ni variantes.
 
 ════════════════════════════════════════
 LECTURA DEL PEDIMENTO — ESTRUCTURA FIJA
@@ -537,6 +572,17 @@ Los documentos se adjuntan a continuación.""",
 TAREA: Cotejar la relación de series declaradas (Art. 36-A Ley Aduanera) contra la revisión física en bodega.
 
 ════════════════════════════════════════
+VOCABULARIO DE ESTATUS — OBLIGATORIO
+════════════════════════════════════════
+Usa ÚNICAMENTE estas palabras para reportar el resultado de cada verificación:
+• Correcto — el dato coincide sin objeción
+• Discrepancia — hay diferencia real que requiere corrección
+• Observación — situación especial que no es error pero requiere atención
+• Pendiente — falta documento o información para concluir
+• No aplica — la verificación no aplica a esta operación
+NUNCA uses: Alerta, Advertencia, Inconsistencia, Irregularidad, ni variantes.
+
+════════════════════════════════════════
 FUENTES DE INFORMACIÓN — CRÍTICO
 ════════════════════════════════════════
 FUENTE 1 — SERIE DECLARADA EN EL SISTEMA: el DETALLE DE COVE.
@@ -625,6 +671,17 @@ con dominio del T-MEC (USMCA), Capítulo 5 y Anexo 5-A — Elementos Mínimos de
 
 TAREA: Verificar que cada certificado T-MEC cumpla los 9 elementos obligatorios del Anexo 5-A
 y sea coherente con la factura comercial y el pedimento.
+
+════════════════════════════════════════
+VOCABULARIO DE ESTATUS — OBLIGATORIO
+════════════════════════════════════════
+Usa ÚNICAMENTE estas palabras para reportar el resultado de cada verificación:
+• Correcto — el dato coincide sin objeción
+• Discrepancia — hay diferencia real que requiere corrección
+• Observación — situación especial que no es error pero requiere atención
+• Pendiente — falta documento o información para concluir
+• No aplica — la verificación no aplica a esta operación
+NUNCA uses: Alerta, Advertencia, Inconsistencia, Irregularidad, ni variantes.
 
 ════════════════════════════════════════
 DATOS DEL PEDIMENTO (JSON dato duro)
