@@ -1,0 +1,182 @@
+{
+  "descripcion": "Apéndice 8 del Anexo 22 — Identificadores relevantes para verificación RRNA",
+  "version": "DOF 09-mayo-2022 y modificaciones posteriores",
+  "nota": "Solo se incluyen identificadores relevantes para la glosa de RRNA. El identificador XP y los permisos del Apéndice 9 son el foco principal.",
+
+  "XP": {
+    "nombre": "Excepción al cumplimiento de regulaciones y restricciones no arancelarias",
+    "nivel": "P",
+    "uso": "Exceptuar cumplimiento de un PERMISO (NO aplica para NOMs — las NOMs usan EN)",
+    "complemento1": "Clave del permiso que se exceptúa (del Apéndice 9)",
+    "complemento2": {
+      "E": "No es mercancía obligada — está dentro de la acotación EXCEPTO",
+      "U": "No es mercancía obligada — está fuera de la acotación ÚNICAMENTE",
+      "vacio": "No asentar datos cuando el permiso sí aplica y se presenta"
+    },
+    "complemento3": "No asentar datos (Vacío)",
+    "permisos_validos": {
+      "A1": {
+        "descripcion": "Certificado Fitozoosanitario / Certificado de Sanidad Acuícola",
+        "dependencia": "SADER (antes SAGARPA)",
+        "palabras_clave_restriccion": ["SADER", "SAGARPA", "fitosanitario", "sanidad vegetal", "sanidad acuícola", "fitozoosanitario"],
+        "complemento1_opciones": {
+          "1": "Productos químicos, farmacéuticos y biológicos para animales acuáticos (Anexo 1-a)",
+          "2": "Animales, bienes de origen animal o alimenticios para animales acuáticos (Anexo 1-b y c)",
+          "3": "No aplica",
+          "4": "No es mercancía regulada por Dir. Gral. de Sanidad Vegetal (Anexo 1-e)",
+          "5": "No está sujeta a requisitos de Requisitos Fitosanitarios de importación (Anexo 1-f)",
+          "U": "Fuera de la acotación únicamente",
+          "E": "Dentro de la acotación excepto"
+        }
+      },
+      "C2": {
+        "descripcion": "Permiso previo de importación de mercancías USADAS",
+        "dependencia": "SE (Secretaría de Economía)",
+        "palabras_clave_restriccion": ["usadas", "usado", "segunda mano", "C2"],
+        "complemento1_opciones": {
+          "numeral": "Numeral 11, fracción VIII, IX o X del Anexo 2.2.1 más inciso correspondiente",
+          "U": "Fuera de acotación únicamente",
+          "E": "Dentro de acotación excepto"
+        }
+      },
+      "C6": {
+        "descripcion": "Permiso previo de exportación definitiva",
+        "dependencia": "SE (Secretaría de Economía)",
+        "palabras_clave_restriccion": ["exportación", "permiso previo exportación"],
+        "complemento1_opciones": {
+          "UM": "Uso de la mercancía",
+          "WS": "Declara bajo protesta que no requiere permiso previo de exportación (bienes de uso dual)"
+        }
+      },
+      "D1": {
+        "descripcion": "Permiso SEDENA — armas, municiones, materiales explosivos",
+        "dependencia": "SEDENA (Secretaría de la Defensa Nacional)",
+        "palabras_clave_restriccion": ["SEDENA", "armas", "municiones", "explosivos", "artificios", "pirotécnicos", "voladuras", "demoliciones"],
+        "complemento1_opciones": {
+          "1A": "Artículos/sustancias/materiales NO destinados a fabricación de explosivos o artificios pirotécnicos",
+          "1B": "Máquinas/aparatos/dispositivos que NO se usan para fabricar armas, municiones, explosivos o artificios",
+          "U": "Fuera de acotación únicamente",
+          "E": "Dentro de acotación excepto"
+        }
+      },
+      "S1": {
+        "descripcion": "Autorización Sanitaria previa de importación",
+        "dependencia": "COFEPRIS / Secretaría de Salud (SSA)",
+        "palabras_clave_restriccion": ["COFEPRIS", "Secretaría de Salud", "sanitaria", "S1", "diagnóstico", "tratamiento", "rehabilitación", "farmoquímicos", "estupefacientes", "psicotrópicas"],
+        "complemento1_opciones": {
+          "1": "No son productos, materias primas o equipos para diagnóstico/tratamiento/prevención/rehabilitación en humanos",
+          "2": "Partes y accesorios de instrumentos/aparatos del Capítulo 90 TIGIE",
+          "3": "No son medicamentos, farmoquímicos o materias primas (estupefacientes/psicotrópicas) para uso humano",
+          "4": "Productos para uso en diagnóstico/tratamiento en humanos pero no en supuestos del Anexo 1-d del Acuerdo de Salud",
+          "5": "No son sustancias químicas susceptibles de desvío para armas químicas",
+          "UM": "Uso de la mercancía (A=Animal, V=Veterinario, I=Industrial, H=Humanos)",
+          "U": "Fuera de acotación únicamente",
+          "E": "Dentro de acotación excepto"
+        }
+      },
+      "S2": {
+        "descripcion": "Aviso sanitario de importación",
+        "dependencia": "COFEPRIS / Secretaría de Salud (SSA)",
+        "palabras_clave_restriccion": ["aviso sanitario", "S2", "alimentos", "consumo humano"],
+        "complemento1_opciones": {
+          "1": "No son mercancías para diagnóstico/tratamiento/prevención/rehabilitación en humanos",
+          "2": "No son productos para consumo humano o industria alimentaria",
+          "U": "Fuera de acotación únicamente",
+          "E": "Dentro de acotación excepto"
+        }
+      },
+      "S3": {
+        "descripcion": "Copia del Registro Sanitario",
+        "dependencia": "COFEPRIS / Secretaría de Salud (SSA)",
+        "palabras_clave_restriccion": ["registro sanitario", "S3"],
+        "complemento1_opciones": {
+          "1": "Partes y accesorios de instrumentos/aparatos del Capítulo 90 TIGIE",
+          "2": "No son mercancías para diagnóstico/tratamiento/prevención/rehabilitación en humanos",
+          "3": "Mercancía en algún supuesto del Anexo 1-d del Acuerdo de Salud",
+          "U": "Fuera de acotación únicamente",
+          "E": "Dentro de acotación excepto"
+        }
+      },
+      "T1": {
+        "descripcion": "Certificado CITES o Autorización de Importación SEMARNAT",
+        "dependencia": "SEMARNAT",
+        "palabras_clave_restriccion": ["SEMARNAT", "CITES", "especies", "flora", "fauna", "vida silvestre", "T1"],
+        "complemento1_opciones": {
+          "1": "No está dentro de las especies listadas en apéndices CITES",
+          "2": "No aplica",
+          "3": "No son partes ni derivados de especies listadas en apéndices CITES",
+          "4": "No aplica",
+          "U": "Fuera de acotación únicamente",
+          "E": "Dentro de acotación excepto"
+        }
+      },
+      "T5": {
+        "descripcion": "Certificado Fitosanitario SEMARNAT — Dirección General Forestal",
+        "dependencia": "SEMARNAT (forestal)",
+        "palabras_clave_restriccion": ["SEMARNAT", "forestal", "madera", "fitosanitario forestal", "T5"],
+        "complemento1_opciones": {
+          "1": "Madera aserrada nueva conforme a NOM-016-SEMARNAT-2013",
+          "U": "Fuera de acotación únicamente",
+          "E": "Dentro de acotación excepto"
+        }
+      },
+      "T8": {
+        "descripcion": "Certificado CITES o Autorización de Exportación SEMARNAT",
+        "dependencia": "SEMARNAT",
+        "palabras_clave_restriccion": ["SEMARNAT", "CITES", "exportación", "T8"],
+        "complemento1_opciones": {
+          "U": "Fuera de acotación únicamente",
+          "E": "Dentro de acotación excepto"
+        }
+      }
+    }
+  },
+
+  "EN": {
+    "nombre": "No aplicación de la Norma Oficial Mexicana",
+    "nivel": "P",
+    "uso": "Identificar que la mercancía NO está sujeta al cumplimiento de una NOM (NO aplica para permisos — los permisos usan XP)",
+    "complemento1": {
+      "ENOM": "Mercancía exceptuada en términos de la propia NOM",
+      "U": "No comprendida en la acotación ÚNICAMENTE del Acuerdo",
+      "E": "Comprendida en la acotación EXCEPTO del Acuerdo",
+      "EIR": "No sujeta a NOM-016-CRE-2016 (petrolíferos)",
+      "REGLA2410": "Conforme a regla 2.4.10 del Acuerdo",
+      "ART13": "Conforme al artículo 13 de las Políticas y procedimientos",
+      "FR": "Mercancía exceptuada de IFT-004-2016 e IFT-008-2015 en región fronteriza"
+    },
+    "complemento2": "Nombre de la NOM que se exceptúa (ej. NOM-050-SCFI-2004)",
+    "complemento3": "Numeral de la NOM cuando en complemento 1 se declare ENOM"
+  },
+
+  "NM": {
+    "nombre": "Certificado de cumplimiento de NOM",
+    "nivel": "P",
+    "uso": "Declarar que la mercancía cumple con la NOM mediante certificado",
+    "complemento1": "Nombre de la NOM cumplida (ej. NOM-003-SCFI-2014)",
+    "complemento2": "Número/folio del certificado de conformidad",
+    "complemento3": "No asentar datos (Vacío)"
+  },
+
+  "N3": {
+    "nombre": "Declaración de cumplimiento NOM (sin certificado individual)",
+    "nivel": "P",
+    "uso": "Declarar cumplimiento de NOM cuando no se requiere certificado individual por partida",
+    "complemento1": "Nombre de la NOM (ej. NOM-024-SCFI-2013)",
+    "complemento2": "No asentar datos (Vacío)",
+    "complemento3": "No asentar datos (Vacío)"
+  },
+
+  "regla_verificacion_XP": {
+    "descripcion": "Cómo verificar si un XP declarado en el pedimento es correcto o incorrecto",
+    "pasos": [
+      "1. Leer el archivo de restricciones e identificar qué dependencias o permisos menciona para cada fracción (SADER, SEDENA, COFEPRIS/SSA, SEMARNAT, SE, CICOPLAFEST, etc.)",
+      "2. Mapear cada dependencia a su clave de permiso XP usando 'palabras_clave_restriccion' de cada permiso",
+      "3. Si la restricción menciona la dependencia → el pedimento DEBE declarar XP con la clave correspondiente (A1, D1, S1, S3, T1, etc.)",
+      "4. Si el pedimento declara un XP y la restricción NO menciona esa dependencia → OBSERVACIÓN: XP sin respaldo en restricciones",
+      "5. Si la restricción menciona una dependencia y el pedimento NO declara el XP → DISCREPANCIA: falta declarar XP",
+      "6. Verificar que complemento2 sea E o U según corresponda a la acotación de la restricción (EXCEPTO=E, ÚNICAMENTE=U)",
+      "7. IMPORTANTE: XP es SOLO para permisos. Las NOMs usan EN, NM o N3. No confundir."
+    ]
+  }
+}
