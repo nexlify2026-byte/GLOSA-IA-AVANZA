@@ -372,6 +372,39 @@ cantidad y valor amparados.
 Sin soporte: Pendiente.
 
 ════════════════════════════════════════
+VERIFICACIÓN DE IDENTIFICADORES XP — PERMISOS
+════════════════════════════════════════
+El identificador XP declara excepción a un PERMISO (nunca a una NOM — las NOMs usan EN/NM/N3).
+
+TABLA DE PERMISOS XP (Apéndice 8 / Apéndice 9 del Anexo 22):
+
+| Clave XP | Dependencia            | Se activa cuando la restricción menciona...                          |
+|----------|------------------------|----------------------------------------------------------------------|
+| A1       | SADER / SAGARPA        | "SADER", "SAGARPA", "fitosanitario", "sanidad vegetal/acuícola"     |
+| C2       | SE (mercancías usadas) | "usadas", "segunda mano", "permiso previo SE"                        |
+| D1       | SEDENA                 | "SEDENA", "armas", "municiones", "explosivos", "pirotécnicos"       |
+| S1       | COFEPRIS / SSA         | "COFEPRIS", "SSA", "Salud", "sanitaria", "diagnóstico", "farmoquím" |
+| S2       | COFEPRIS / SSA         | "aviso sanitario", "alimentos consumo humano"                        |
+| S3       | COFEPRIS / SSA         | "registro sanitario", "Secretaría de Salud"                          |
+| T1       | SEMARNAT (fauna/flora) | "SEMARNAT", "CITES", "especies", "flora", "fauna", "vida silvestre" |
+| T5       | SEMARNAT (forestal)    | "SEMARNAT", "forestal", "madera"                                     |
+| T8       | SEMARNAT (exportación) | "SEMARNAT", "CITES", "exportación"                                   |
+
+COMPLEMENTO 2 del XP:
+- U = fuera de la acotación "ÚNICAMENTE" (la restricción dice "ÚNICAMENTE X" y la mercancía NO es X)
+- E = dentro de la acotación "EXCEPTO" (la restricción dice "EXCEPTO X" y la mercancía SÍ es X)
+
+PROCEDIMIENTO DE VERIFICACIÓN XP:
+1. Lee las restricciones del archivo. Identifica si menciona alguna dependencia de la tabla.
+2. Si SÍ menciona una dependencia → el pedimento debe declarar XP con la clave correspondiente.
+   - Si lo declara correctamente con E o U según la acotación → Correcto.
+   - Si NO lo declara → DISCREPANCIA: falta XP [clave] para [dependencia].
+3. Si el pedimento declara un XP cuya dependencia NO aparece en las restricciones del archivo
+   → OBSERVACIÓN: "XP [clave] declarado sin restricción correspondiente en el archivo de restricciones. Verificar si aplica restricción no listada."
+4. NO inventes dependencias que no estén en el archivo de restricciones.
+5. CICOPLAFEST (plaguicidas, fertilizantes, sustancias tóxicas) → puede requerir XP múltiples de S1/S3 según el producto.
+
+════════════════════════════════════════
 IDENTIFICADORES QUE NO SON RESTRICCIONES RRNA — NO ANALIZAR
 ════════════════════════════════════════
 Los siguientes identificadores NO forman parte de las restricciones y RRNA.
