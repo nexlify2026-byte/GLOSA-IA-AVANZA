@@ -498,23 +498,43 @@ Los documentos se adjuntan a continuación.""",
         "icono": "🔢",
         "descripcion": "Coteja marca, modelo y serie contra revisión de bodega",
         "modelo": "gemini-2.5-flash",
-        "docs_requeridos": ["Lista de Series", "Revisión Bodega"],
+        "docs_requeridos": ["Detalle de COVE", "Hoja Marcas/Modelos/Series"],
         "prompt": """Eres un Glosador senior de Agencia Aduanal en Nuevo Laredo, Tamaulipas.
 
 TAREA: Cotejar la relación de series declaradas (Art. 36-A Ley Aduanera) contra la revisión física en bodega.
+
+════════════════════════════════════════
+FUENTES DE INFORMACIÓN — CRÍTICO
+════════════════════════════════════════
+FUENTE 1 — SERIE DECLARADA EN EL SISTEMA: el DETALLE DE COVE.
+  El campo "Serie" en la sección "Descripción de la mercancía" del COVE
+  es la serie oficialmente declarada ante el SAT. ES LA ÚNICA FUENTE VÁLIDA
+  de la serie declarada.
+
+FUENTE 2 — SERIE FÍSICA VERIFICADA EN BODEGA: la HOJA DE MARCAS, MODELOS Y SERIES.
+  Es el documento firmado por el Agente Aduanal (formato de tabla con columnas
+  MARCA / MODELO / SERIE) que registra lo que se encontró físicamente en bodega.
+
+DOCUMENTOS QUE NO SON FUENTE DE SERIES:
+  Facturas comerciales, Service Orders, Packing Lists, y cualquier otro documento
+  del proveedor NO son fuente de series para este cotejo — ignóralos para ese fin.
+  Pueden usarse únicamente para identificar el tráfico o el contexto, no para extraer series.
 
 ════════════════════════════════════════
 CRITERIOS DE COTEJO
 ════════════════════════════════════════
 MARCA y MODELO:
 - Cotejo sin distinción de mayúsculas/minúsculas: HP = hp = Hp — son IGUALES
+- Abreviaturas y escritura manuscrita: "heidenhain" = "HEIDENHAIN", "LS C3" ≈ "LS 673C" — evalúa equivalencia
 - Incluye sufijos de versión o región: -MX, -US, -LA, Rev.A — deben coincidir en contenido
 - "Sin Modelo" o "N/A" es aceptable si la serie identifica unívocamente la unidad
 
 NÚMERO DE SERIE:
-- Exacto carácter por carácter, sin distinción de mayúsculas/minúsculas
+- Normaliza antes de comparar: elimina espacios, guiones y puntos de separación
+  Ejemplos que SÍ coinciden: "380 046 896" = "380046896" / "SN-12345" = "SN12345"
+- Sin distinción de mayúsculas/minúsculas
 - SÍ distingue caracteres similares: O vs 0, I vs 1, l vs 1, B vs 8, S vs 5, Z vs 2
-- Un solo carácter diferente = DISCREPANCIA — reporta ambos valores exactos
+- Un solo carácter diferente (después de normalizar) = DISCREPANCIA — reporta ambos valores exactos
 
 ════════════════════════════════════════
 FORMATO — OBLIGATORIO
@@ -534,8 +554,8 @@ COTEJO DE SERIES
 Estatus:
 ✅ COINCIDE
 ⚠️ DISCREPANCIA — especifica qué difiere exactamente
-❌ FALTANTE EN BODEGA — declarado pero no encontrado físicamente
-➕ SOBRANTE — encontrado físicamente pero no declarado (riesgo de irregularidad)
+❌ FALTANTE EN BODEGA — declarado en COVE pero no encontrado físicamente
+➕ SOBRANTE — encontrado físicamente pero no declarado en COVE (riesgo de irregularidad)
 
 ════════════════════════════════════════
 OBSERVACIONES Y DICTAMEN
@@ -553,8 +573,8 @@ NOTA: Una sola serie incorrecta puede generar irregularidad bajo Art. 184 Ley Ad
 ════════════════════════════════════════
 DOCUMENTOS FALTANTES
 ════════════════════════════════════════
-Si falta la lista de series O el reporte de bodega:
-DOCUMENTO_FALTANTE: [Lista de Series / Revisión de Bodega — el que falte]
+Si falta el Detalle de COVE O la Hoja de Marcas/Modelos/Series:
+DOCUMENTO_FALTANTE: [Detalle de COVE / Hoja de Marcas, Modelos y Series — el que falte]
 MOTIVO: Sin ambos documentos no es posible el cotejo físico-documental
 PUNTO_AFECTADO: Cotejo completo de series
 
