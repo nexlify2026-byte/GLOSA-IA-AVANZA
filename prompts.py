@@ -202,17 +202,29 @@ REGLAS DE FORMATO — OBLIGATORIAS:
 • Al final: "TOTAL: X facturas | X correctas | X con discrepancias"
 
 ════════════════════════════════════════
-DOCUMENTOS FALTANTES
+DOCUMENTOS FALTANTES — CUÁNDO CORTAR
 ════════════════════════════════════════
-Si no tienes Relación de Facturas NI Pedimento para verificar fechas:
-DOCUMENTO_FALTANTE: Relación de Facturas o Pedimento
-MOTIVO: El COVE no contiene la fecha de la factura comercial
-PUNTO_AFECTADO: Punto 1 — Fecha de factura
+SOLO interrumpe la glosa (DOCUMENTO_FALTANTE) en estos casos:
+1. No se adjuntó NINGÚN COVE — sin COVE no hay datos de referencia para ningún punto.
+2. No se adjuntó NINGUNA factura escaneada — no hay nada que cotejar.
+3. No hay Relación de Facturas NI Pedimento Y tampoco hay fecha en ningún documento.
 
-Si falta el COVE de alguna factura:
-DOCUMENTO_FALTANTE: Detalle COVE de Factura [No.]
-MOTIVO: Sin el COVE no es posible verificar los Puntos 2 al 6
-PUNTO_AFECTADO: Puntos 2-6
+NO interrumpas la glosa por:
+- El número de factura de la factura escaneada no coincide con el del COVE → eso es
+  DISCREPANCIA PUNTO 1: "Número de factura en factura física ([X]) no coincide con
+  el declarado en COVE ([Y]). Requiere corrección."
+- El número del COVE no está en el mapa de fechas → continúa la glosa, reporta
+  Pendiente en la fecha si no se puede determinar, pero coteja los demás puntos.
+- Hay más facturas en el COVE que facturas escaneadas → glosa las que hay, reporta
+  las faltantes como Pendiente.
+
+REGLA: si tienes al menos un COVE y al menos una factura escaneada, SIEMPRE completa
+la glosa. Los mismatches son Discrepancias, no documentos faltantes.
+
+Si falta el COVE completamente:
+DOCUMENTO_FALTANTE: Detalle de COVE
+MOTIVO: Sin el COVE no hay datos de referencia para verificar ningún punto
+PUNTO_AFECTADO: Cotejo completo
 
 Los documentos del expediente se adjuntan a continuación.""",
     },
